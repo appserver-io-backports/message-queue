@@ -25,24 +25,30 @@ use TechDivision\MessageQueue\Service\Locator\QueueLocator;
  * @author      Tim Wagner <tw@techdivision.com>
  */
 class Application {
+
+    /**
+     * Path to the container's host configuration.
+     * @var string
+     */
+    const CONTAINER_HOST = '/container/host';
     
     /**
      * The unique application name.
      * @var string
      */
     protected $name;
-    
-    /**
-     * The path to the web application.
-     * @var string
-     */
-    protected $webappPath;
 
     /**
      * The queue manager.
      * @var \TechDivision\MessageQueue\QueueManager
      */
     protected $queueManager;
+
+    /**
+     * The host configuration.
+     * @var \TechDivision\ApplicationServer\Configuration
+     */
+    protected $configuration;
     
     /**
      * Passes the application name That has to be the class namespace.
@@ -82,25 +88,43 @@ class Application {
     public function getName() {
         return $this->name;
     }
-    
+
     /**
-     * Set's the path to the web application.
-     * 
-     * @param string $webappPath The path to the web application
+     * Set's the host configuration.
+     *
+     * @param TechDivision\ApplicationServer\Configuration $configuration The host configuration
      * @return \TechDivision\ServletContainer\Application The application instance
      */
-    public function setWebappPath($webappPath) {
-        $this->webappPath = $webappPath;
+    public function setConfiguration($configuration) {
+        $this->configuration = $configuration;
         return $this;
     }
-    
+
+    /**
+     * Returns the host configuration.
+     *
+     * @return \TechDivision\ApplicationServer\Configuration The host configuration
+     */
+    public function getConfiguration() {
+        return $this->configuration;
+    }
+
+    /**
+     * Returns the path to the appserver webapp base directory.
+     *
+     * @return string The path to the appserver webapp base directory
+     */
+    public function getAppBase() {
+        return $this->getConfiguration()->getChild(self::CONTAINER_HOST)->getAppBase();
+    }
+
     /**
      * Return's the path to the web application.
-     * 
+     *
      * @return string The path to the web application
      */
     public function getWebappPath() {
-        return $this->webappPath;
+        return $this->getAppBase() . DS . $this->getName();
     }
     
     /**
