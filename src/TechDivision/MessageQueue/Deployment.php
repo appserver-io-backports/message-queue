@@ -27,14 +27,32 @@ class Deployment {
      */
     const CONTAINER_HOST = '/container/host';
 
+    /**
+     * The container thread
+     * @var \TechDivision\ApplicationServer\ContainerThread
+     */
     protected $containerThread;
 
+    /**
+     * Array with the initialized applications.
+     * @var array
+     */
     protected $applications;
 
+    /**
+     * Initializes the deployment with the container thread.
+     *
+     * @param \TechDivision\ApplicationServer\ContainerThread $containerThread
+     */
     public function __construct($containerThread) {
         $this->containerThread = $containerThread;
     }
 
+    /**
+     * Returns the container thread.
+     *
+     * @return \TechDivision\ApplicationServer\ContainerThread The container thread
+     */
     public function getContainerThread() {
         return $this->containerThread;
     }
