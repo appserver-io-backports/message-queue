@@ -108,8 +108,6 @@ class QueueManager {
                      
                     $destination = (string) $node->destination;
                     $this->queues[$destination] = $type;
-                     
-                    error_log("Successfully initialized queue: " . $destination);
                 }
             }
         }
