@@ -20,6 +20,18 @@ use TechDivision\ApplicationServer\AbstractContainer;
  * @license    	http://opensource.org/licenses/osl-3.0.php
  *              Open Software License (OSL 3.0)
  * @author      Tim Wagner <tw@techdivision.com>
+ * @author      Johann Zelger <jz@techdivision.com>
  */
 class Container extends AbstractContainer {
+
+    /**
+     * Updates the message monitor.
+     *
+     * @param Message $message The message to update the monitor for
+     * @return void
+     */
+    public function updateMonitor(Message $message) {
+        error_log("Update message monitor with message: $message");
+    }
+
 }
