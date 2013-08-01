@@ -12,7 +12,9 @@
 
 namespace TechDivision\MessageQueue;
 
+use TechDivision\ApplicationServer\Interfaces\ContainerInterface;
 use TechDivision\Socket\Client;
+use TechDivision\SplClassLoader;
 
 /**
  * The thread implementation that handles the request.
@@ -79,8 +81,9 @@ class ThreadRequest extends \Thread {
 
             // lookup the message receiver and process the message
             $receiver = $application->locate($queue);
-            // TODO: cleanup wording and responsibilities worker/container...
-            $receiver->setWorker($this->container);
+
+            // set container to receiver
+            $receiver->setContainer($this->container);
             $receiver->onMessage($message, $sessionId);
 
         } catch (\Exception $e) {

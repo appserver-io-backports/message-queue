@@ -13,6 +13,8 @@
 namespace TechDivision\MessageQueue;
 
 use TechDivision\ApplicationServer\AbstractContainer;
+use TechDivision\MessageQueueClient\Interfaces\Message;
+
 
 /**
  * @package     TechDivision\MessageQueue
