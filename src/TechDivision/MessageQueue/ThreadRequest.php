@@ -12,6 +12,7 @@
 
 namespace TechDivision\MessageQueue;
 
+use TechDivision\ApplicationServer\AbstractThread;
 use TechDivision\ApplicationServer\Interfaces\ContainerInterface;
 use TechDivision\Socket\Client;
 use TechDivision\SplClassLoader;
@@ -25,7 +26,7 @@ use TechDivision\SplClassLoader;
  *              Open Software License (OSL 3.0)
  * @author      Johann Zelger <jz@techdivision.com>
  */
-class ThreadRequest extends \Thread {
+class ThreadRequest extends AbstractThread {
     
     /**
      * The message to process.
@@ -47,19 +48,15 @@ class ThreadRequest extends \Thread {
      * @param resource $resource The client socket instance
      * @return void
      */
-    public function __construct(ContainerInterface $container, $resource) {
+    public function init(ContainerInterface $container, $resource) {
         $this->container = $container;
         $this->resource = $resource;
     }
     
     /**
-     * @see \Thread::run()
+     * @see AbstractThread::main()
      */
-    public function run() {
-
-        // register class loader again, because we are in a thread
-        $classLoader = new SplClassLoader();
-        $classLoader->register();
+    public function main() {
 
         // initialize a new client socket
         $client = new Client();
@@ -71,7 +68,6 @@ class ThreadRequest extends \Thread {
         $message = unserialize($client->readLine());
 
         try {
-
             // load class name and session ID from remote method
             $queue = $message->getDestination();
             $sessionId = $message->getSessionId();
