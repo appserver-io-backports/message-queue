@@ -61,7 +61,8 @@ class Application {
      * 
      * @param type $name The application name
      */
-    public function __construct($name) {
+    public function __construct($initialContext, $name) {
+        $this->initialContext = $initialContext;
         $this->name = $name;
     }
     
