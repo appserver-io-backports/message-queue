@@ -35,7 +35,23 @@ class QueueManager {
 	 * @var array
 	 */
 	protected $queues = array();
+	
+	/**
+	 * The application instance
+	 * @var \TechDivision\MessageQueue\Application
+	 */
+	protected $application;
     
+	/**
+	 * Initializes the manager with the passed application instance.
+	 * 
+	 * @param \TechDivision\MessageQueue\Application $application The application instance
+	 * @return void
+	 */
+	public function __construct($application) {
+	    $this->application = $application;
+	}
+	
     /**
      * Has been automatically invoked by the container after the application
      * instance has been created.
@@ -135,5 +151,17 @@ class QueueManager {
      */
     public function getWebappPath() {
         return $this->webappPath;
+    }
+
+    /**
+     * Creates a new instance of the passed class name and passes the
+     * args to the instance constructor.
+     *
+     * @param string $className The class name to create the instance of
+     * @param array $args The parameters to pass to the constructor
+     * @return object The created instance
+     */
+    public function newInstance($className, array $args = array()) {
+        return $this->application->newInstance($className, $args);
     }
 }

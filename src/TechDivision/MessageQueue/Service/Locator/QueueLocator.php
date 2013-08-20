@@ -52,14 +52,13 @@ class QueueLocator implements ResourceLocatorInterface {
      */
     public function locate(Queue $queue) {
         
-        $queues = $this->queueManager->getQueues();
-        
+        // load registered queues and requested queue name
+        $queues = $this->queueManager->getQueues();     
         $queueName = $queue->getName();
-        
+   
+        // return Receiver of requested queue if available
         if (array_key_exists($queueName, $queues)) {
-            
             $receiverType = $queues[$queueName];
-            
             return $this->newInstance($receiverType);
         }
     }
@@ -73,6 +72,6 @@ class QueueLocator implements ResourceLocatorInterface {
      * @return object The created instance
      */
     public function newInstance($className, array $args = array()) { 
-        return InitialContext::get()->newInstance($className, $args);
+        return $this->queueManager->newInstance($className, $args);
     }
 }

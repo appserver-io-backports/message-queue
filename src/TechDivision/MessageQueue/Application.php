@@ -13,7 +13,6 @@
 namespace TechDivision\MessageQueue;
 
 use TechDivision\ApplicationServer\AbstractApplication;
-use TechDivision\MessageQueue\Service\Locator\QueueLocator;
 
 /**
  * The application instance holds all information about the deployed application
@@ -42,7 +41,7 @@ class Application extends AbstractApplication
     public function connect() {
         
         // initialize the queue manager instance
-        $queueManager = new QueueManager();
+        $queueManager = $this->newInstance('TechDivision\MessageQueue\QueueManager', array($this));
         $queueManager->setWebappPath($this->getWebappPath());
         $queueManager->initialize();
         
@@ -91,7 +90,7 @@ class Application extends AbstractApplication
      * @return \TechDivision\MessageQueueClient\Interfaces\MessageReceiver The receiver for the passed queue
      */
     public function locate($queue) {
-        $queueLocator = new QueueLocator($this->getQueueManager());
+        $queueLocator = $this->newInstance('TechDivision\MessageQueue\Service\Locator\QueueLocator', array($this->getQueueManager()));
         return $queueLocator->locate($queue);
     }
 }
