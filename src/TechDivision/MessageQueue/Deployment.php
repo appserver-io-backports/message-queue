@@ -42,7 +42,7 @@ class Deployment extends AbstractDeployment {
         foreach (new \FilesystemIterator($baseDirectory . $appBase) as $folder) {
 
             // check if file or subdirectory has been found
-            if (is_dir($folder. DS . 'META-INF')) {
+            if (is_dir($folder. DIRECTORY_SEPARATOR . 'META-INF')) {
 
                 // initialize the application name
                 $name = basename($folder);
