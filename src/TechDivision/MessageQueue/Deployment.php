@@ -35,8 +35,8 @@ class Deployment extends AbstractDeployment {
         $configuration = $containerThread->getConfiguration();
 
         // load the host configuration for the path to the web application folder
-        $baseDirectory = $configuration->getChild(self::CONTAINER_BASE_DIRECTORY)->getValue();
-        $appBase = $configuration->getChild(self::CONTAINER_HOST)->getAppBase();
+        $baseDirectory = $configuration->getChild(self::XPATH_CONTAINER_BASE_DIRECTORY)->getValue();
+        $appBase = $configuration->getChild(self::XPATH_CONTAINER_HOST)->getAppBase();
 
         // gather all the deployed web applications
         foreach (new \FilesystemIterator($baseDirectory . $appBase) as $folder) {
