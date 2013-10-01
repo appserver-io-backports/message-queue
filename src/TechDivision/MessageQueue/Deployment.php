@@ -32,14 +32,8 @@ class Deployment extends AbstractDeployment
     public function deploy()
     {
 
-        // initialize the container service
-        $containerService = $this->newService('TechDivision\ApplicationServer\Api\ContainerService');
-
-        // load the host configuration for the path to the web application folder
-        $appBase = $containerService->getAppBase($this->getId());
-
         // gather all the deployed web applications
-        foreach (new \FilesystemIterator($appBase) as $folder) {
+        foreach (new \FilesystemIterator($this->getBaseDirectory($this->getAppBase())) as $folder) {
 
             // check if file or subdirectory has been found
             if (is_dir($folder . DIRECTORY_SEPARATOR . 'META-INF')) {
@@ -49,7 +43,8 @@ class Deployment extends AbstractDeployment
 
                 // initialize the application instance
                 $application = $this->newInstance('\TechDivision\MessageQueue\Application', array(
-                    $this->initialContext,
+                    $this->getInitialContext(),
+                    $this->getContainerNode(),
                     $name
                 ));
 
