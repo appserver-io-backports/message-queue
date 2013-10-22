@@ -12,8 +12,8 @@
     ],
     "require": {
         "php" : ">=5.4.0",
-        "techdivision/appserver": "~0.5.8@beta",
-        "techdivision/messagequeueclient": "~0.5.8@beta"
+        "techdivision/appserver": "~0.5.8@dev",
+        "techdivision/messagequeueclient": "~0.5.8@dev"
     },
     "autoload": {
         "psr-0": {"TechDivision": "src/"}
