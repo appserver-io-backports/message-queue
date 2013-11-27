@@ -61,7 +61,7 @@ class QueueManager
      * Has been automatically invoked by the container after the application
      * instance has been created.
      *
-     * @return \TechDivision\ServletContainer\Application The connected application
+     * @return \TechDivision\MessageQueue\QueueManager The queue manager
      */
     public function initialize()
     {
