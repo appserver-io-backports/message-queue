@@ -27,7 +27,7 @@ class Deployment extends AbstractDeployment
     /**
      * Returns an array with available applications.
      *
-     * @return \TechDivision\Server The server instance
+     * @return \TechDivision\ApplicationServer\Interfaces\DeploymentInterface The deployment instance
      */
     public function deploy()
     {
