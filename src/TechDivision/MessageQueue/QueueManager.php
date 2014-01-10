@@ -109,8 +109,8 @@ class QueueManager
             foreach (new \FilesystemIterator($basePath) as $file) {
 
                 // check if file or sub directory has been found
-                if (! is_dir($file)) {
-
+                if (! is_dir($file) && basename($file) === 'message-queues.xml') {
+                    
                     // try to initialize a SimpleXMLElement
                     $sxe = new \SimpleXMLElement($file, null, true);
 
