@@ -96,8 +96,6 @@ class QueueManager
     /**
      * Deploys the MessageQueue's.
      *
-     * @param SimpleXMLElement $sxe
-     *            The XML node with the MessageBean information
      * @return void
      */
     protected function registerMessageQueues()
@@ -110,7 +108,7 @@ class QueueManager
 
                 // check if file or sub directory has been found
                 if (! is_dir($file) && basename($file) === 'message-queues.xml') {
-                    
+
                     // try to initialize a SimpleXMLElement
                     $sxe = new \SimpleXMLElement($file, null, true);
 
