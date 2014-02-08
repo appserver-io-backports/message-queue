@@ -1,14 +1,17 @@
 <?php
-
 /**
  * TechDivision\MessageQueue\Application
  *
- * NOTICE OF LICENSE
+ * PHP version 5
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
+ * @category  Appserver
+ * @package   TechDivision_MessageQueue
+ * @author    Tim Wagner <tw@techdivision.com>
+ * @copyright 2013 TechDivision GmbH <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      http://www.appserver.io
  */
+
 namespace TechDivision\MessageQueue;
 
 use TechDivision\ApplicationServer\AbstractApplication;
@@ -17,11 +20,12 @@ use TechDivision\ApplicationServer\AbstractApplication;
  * The application instance holds all information about the deployed application
  * and provides a reference to the entity manager and the initial context.
  *
- * @package TechDivision\MessageQueue
- * @copyright Copyright (c) 2010 <info@techdivision.com> - TechDivision GmbH
- * @license http://opensource.org/licenses/osl-3.0.php
- *          Open Software License (OSL 3.0)
- * @author Tim Wagner <tw@techdivision.com>
+ * @category  Appserver
+ * @package   TechDivision_MessageQueue
+ * @author    Tim Wagner <tw@techdivision.com>
+ * @copyright 2013 TechDivision GmbH <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      http://www.appserver.io
  */
 class Application extends AbstractApplication
 {
@@ -59,8 +63,8 @@ class Application extends AbstractApplication
     /**
      * Sets the applications queue manager instance.
      *
-     * @param \TechDivision\MessageQueue\QueueManager $queueManager
-     *            The queue manager instance
+     * @param \TechDivision\MessageQueue\QueueManager $queueManager The queue manager instance
+     *
      * @return \TechDivision\MessageQueue\Application The application instance
      */
     public function setQueueManager(QueueManager $queueManager)
@@ -83,8 +87,8 @@ class Application extends AbstractApplication
      * Returns TRUE if the application is related with the
      * passed queue instance.
      *
-     * @param \TechDivision\MessageQueueClient\Queue $queue
-     *            The queue the application has to be related to
+     * @param \TechDivision\MessageQueueClient\Queue $queue The queue the application has to be related to
+     *
      * @return boolean TRUE if the application is related, else FALSE
      */
     public function hasQueue($queue)
@@ -95,7 +99,8 @@ class Application extends AbstractApplication
     /**
      * Returns the receiver for the passed queue.
      *
-     * @param \TechDivision\MessageQueueClient\Queue $queue
+     * @param \TechDivision\MessageQueueClient\Queue $queue The queue client instance
+     *
      * @return \TechDivision\MessageQueueClient\Interfaces\MessageReceiver The receiver for the passed queue
      */
     public function locate($queue)

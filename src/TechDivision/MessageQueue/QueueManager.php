@@ -1,25 +1,30 @@
 <?php
-
 /**
  * TechDivision\ServletContainer\QueueManager
  *
- * NOTICE OF LICENSE
+ * PHP version 5
  *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
+ * @category  Appserver
+ * @package   TechDivision_MessageQueue
+ * @author    Tim Wagner <tw@techdivision.com>
+ * @author    Markus Stockbauer <ms@techdivision.com>
+ * @copyright 2013 TechDivision GmbH <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      http://www.appserver.io
  */
+
 namespace TechDivision\MessageQueue;
 
 /**
  * The queue manager handles the queues and message beans registered for the application.
  *
- * @package TechDivision\ServletContainer
- * @copyright Copyright (c) 2010 <info@techdivision.com> - TechDivision GmbH
- * @license http://opensource.org/licenses/osl-3.0.php
- *          Open Software License (OSL 3.0)
- * @author Markus Stockbauer <ms@techdivision.com>
- * @author Tim Wagner <tw@techdivision.com>
+ * @category  Appserver
+ * @package   TechDivision_MessageQueue
+ * @author    Tim Wagner <tw@techdivision.com>
+ * @author    Markus Stockbauer <ms@techdivision.com>
+ * @copyright 2013 TechDivision GmbH <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      http://www.appserver.io
  */
 class QueueManager
 {
@@ -48,9 +53,7 @@ class QueueManager
     /**
      * Initializes the manager with the passed application instance.
      *
-     * @param \TechDivision\MessageQueue\Application $application
-     *            The application instance
-     * @return void
+     * @param \TechDivision\MessageQueue\Application $application The application instance
      */
     public function __construct($application)
     {
@@ -77,8 +80,8 @@ class QueueManager
      * Appends the passed directory to the include path if not already
      * has been appended before.
      *
-     * @param string $directory
-     *            The directory to append
+     * @param string $directory The directory to append
+     *
      * @return void
      */
     protected function extendIncludePath($directory)
@@ -150,8 +153,11 @@ class QueueManager
     }
 
     /**
+     * Set's the webapp path
      *
-     * @param String $webappPath
+     * @param String $webappPath The webapp path to set
+     *
+     * @return void
      */
     public function setWebappPath($webappPath)
     {
@@ -159,6 +165,7 @@ class QueueManager
     }
 
     /**
+     * Return's the webapp path
      *
      * @return String
      */
@@ -171,10 +178,9 @@ class QueueManager
      * Creates a new instance of the passed class name and passes the
      * args to the instance constructor.
      *
-     * @param string $className
-     *            The class name to create the instance of
-     * @param array $args
-     *            The parameters to pass to the constructor
+     * @param string $className The class name to create the instance of
+     * @param array  $args      The parameters to pass to the constructor
+     *
      * @return object The created instance
      */
     public function newInstance($className, array $args = array())
