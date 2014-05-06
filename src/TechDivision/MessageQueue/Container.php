@@ -13,8 +13,7 @@
 namespace TechDivision\MessageQueue;
 
 use TechDivision\ApplicationServer\AbstractContainer;
-use TechDivision\MessageQueueClient\Interfaces\Message;
-
+use TechDivision\MessageQueueProtocol\Message;
 
 /**
  * @package     TechDivision\MessageQueue
@@ -24,7 +23,8 @@ use TechDivision\MessageQueueClient\Interfaces\Message;
  * @author      Tim Wagner <tw@techdivision.com>
  * @author      Johann Zelger <jz@techdivision.com>
  */
-class Container extends AbstractContainer {
+class Container extends AbstractContainer
+{
 
     /**
      * Updates the message monitor.
@@ -32,8 +32,8 @@ class Container extends AbstractContainer {
      * @param Message $message The message to update the monitor for
      * @return void
      */
-    public function updateMonitor(Message $message) {
+    public function updateMonitor(Message $message)
+    {
         error_log("Update message monitor with message: $message");
     }
-
 }
