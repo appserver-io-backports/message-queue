@@ -1,25 +1,39 @@
 <?php
 
 /**
- * TechDivision\ServletContainer\QueueManager
+ * TechDivision\MessageQueue\QueueManager
  *
  * NOTICE OF LICENSE
  *
  * This source file is subject to the Open Software License (OSL 3.0)
  * that is available through the world-wide-web at this URL:
  * http://opensource.org/licenses/osl-3.0.php
+ *
+ * PHP version 5
+ *
+ * @category  Library
+ * @package   TechDivision_MessageQueue
+ * @author    Tim Wagner <tw@techdivision.com>
+ * @author    Markus Stockbauer <ms@techdivision.com>
+ * @copyright 2014 TechDivision GmbH <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      https://github.com/techdivision/TechDivision_MessageQueue
+ * @link      http://www.appserver.io
  */
+
 namespace TechDivision\MessageQueue;
 
 /**
  * The queue manager handles the queues and message beans registered for the application.
  *
- * @package TechDivision\ServletContainer
- * @copyright Copyright (c) 2010 <info@techdivision.com> - TechDivision GmbH
- * @license http://opensource.org/licenses/osl-3.0.php
- *          Open Software License (OSL 3.0)
- * @author Markus Stockbauer <ms@techdivision.com>
- * @author Tim Wagner <tw@techdivision.com>
+ * @category  Library
+ * @package   TechDivision_MessageQueue
+ * @author    Tim Wagner <tw@techdivision.com>
+ * @author    Markus Stockbauer <ms@techdivision.com>
+ * @copyright 2014 TechDivision GmbH <info@techdivision.com>
+ * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link      https://github.com/techdivision/TechDivision_MessageQueue
+ * @link      http://www.appserver.io
  */
 class QueueManager
 {
@@ -39,25 +53,6 @@ class QueueManager
     protected $queues = array();
 
     /**
-     * The application instance
-     *
-     * @var \TechDivision\MessageQueue\Application
-     */
-    protected $application;
-
-    /**
-     * Initializes the manager with the passed application instance.
-     *
-     * @param \TechDivision\MessageQueue\Application $application
-     *            The application instance
-     * @return void
-     */
-    public function __construct($application)
-    {
-        $this->application = $application;
-    }
-
-    /**
      * Has been automatically invoked by the container after the application
      * instance has been created.
      *
@@ -74,30 +69,10 @@ class QueueManager
     }
 
     /**
-     * Appends the passed directory to the include path if not already
-     * has been appended before.
-     *
-     * @param string $directory
-     *            The directory to append
-     * @return void
-     */
-    protected function extendIncludePath($directory)
-    {
-
-        // explode the include path
-        $includePath = explode(PATH_SEPARATOR, ini_get('include_path'));
-
-        // check if directory has been appended before
-        if (in_array($directory, $includePath) === false) {
-            ini_set("include_path", ini_get("include_path") . PATH_SEPARATOR . $directory);
-        }
-    }
-
-    /**
      * Deploys the MessageQueue's.
      *
-     * @param SimpleXMLElement $sxe
-     *            The XML node with the MessageBean information
+     * @param SimpleXMLElement $sxe The XML node with the MessageBean information
+     *
      * @return void
      */
     protected function registerMessageQueues()
@@ -109,7 +84,7 @@ class QueueManager
             foreach (new \FilesystemIterator($basePath) as $file) {
 
                 // check if file or sub directory has been found
-                if (! is_dir($file)) {
+                if ($file->isDir() === false) {
 
                     // try to initialize a SimpleXMLElement
                     $sxe = new \SimpleXMLElement($file, null, true);
@@ -125,15 +100,11 @@ class QueueManager
                         // load the nodes attributes
                         $attributes = $node->attributes();
 
-                        // extract the attributes from the XML
-                        $applicationDirectory = $basePath . DIRECTORY_SEPARATOR . (string) $attributes["directory"];
-                        $type = (string) $attributes["type"];
+                        // create a new queue instance
+                        $instance = MessageQueue::createQueue((string) $node->destination, (string) $attributes['type']);
 
-                        // add the deployment directory to the include path
-                        $this->extendIncludePath($applicationDirectory);
-
-                        $destination = (string) $node->destination;
-                        $this->queues[$destination] = $type;
+                        // register destination and receiver type
+                        $this->queues[$instance->getName()] = $instance;
                     }
                 }
             }
@@ -153,7 +124,7 @@ class QueueManager
 
     /**
      *
-     * @param String $webappPath
+     * @param string $webappPath
      */
     public function setWebappPath($webappPath)
     {
@@ -162,25 +133,10 @@ class QueueManager
 
     /**
      *
-     * @return String
+     * @return string
      */
     public function getWebappPath()
     {
         return $this->webappPath;
-    }
-
-    /**
-     * Creates a new instance of the passed class name and passes the
-     * args to the instance constructor.
-     *
-     * @param string $className
-     *            The class name to create the instance of
-     * @param array $args
-     *            The parameters to pass to the constructor
-     * @return object The created instance
-     */
-    public function newInstance($className, array $args = array())
-    {
-        return $this->application->newInstance($className, $args);
     }
 }

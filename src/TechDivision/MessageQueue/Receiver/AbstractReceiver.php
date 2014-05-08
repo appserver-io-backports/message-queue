@@ -2,34 +2,43 @@
 /**
  * TechDivision\MessageQueue\Receiver\AbstractReceiver
  *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ *
  * PHP version 5
  *
- * @category   Appserver
+ * @category   Library
  * @package    TechDivision_MessageQueue
  * @subpackage Receiver
  * @author     Tim Wagner <tw@techdivision.com>
  * @author     Markus Stockbauer <ms@techdivision.com>
- * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @copyright  2014 TechDivision GmbH <info@techdivision.com>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       https://github.com/techdivision/TechDivision_MessageQueue
  * @link       http://www.appserver.io
  */
 
 namespace TechDivision\MessageQueue\Receiver;
 
 use TechDivision\ApplicationServer\Interfaces\ContainerInterface;
+use TechDivision\ApplicationServer\Interfaces\ApplicationInterface;
 use TechDivision\MessageQueueProtocol\Message;
 use TechDivision\MessageQueueProtocol\Receiver;
 
 /**
  * The abstract superclass for all receivers.
  *
- * @category   Appserver
+ * @category   Library
  * @package    TechDivision_MessageQueue
  * @subpackage Receiver
  * @author     Tim Wagner <tw@techdivision.com>
  * @author     Markus Stockbauer <ms@techdivision.com>
- * @copyright  2013 TechDivision GmbH <info@techdivision.com>
+ * @copyright  2014 TechDivision GmbH <info@techdivision.com>
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link       https://github.com/techdivision/TechDivision_MessageQueue
  * @link       http://www.appserver.io
  */
 abstract class AbstractReceiver implements Receiver
@@ -43,13 +52,45 @@ abstract class AbstractReceiver implements Receiver
     protected $container = null;
 
     /**
-     * Initializes the receiver with the initializing container.
+     * The application instance that provides the entity manager.
      *
-     * @param \TechDivision\ApplicationServer\ContainerInterface $container The container
+     * @var \TechDivision\ApplicationServer\Interfaces\ApplicationInterface
+     */
+    protected $application;
+
+    /**
+     * Initializes the session bean with the Application instance.
+     *
+     * Checks on every start if the database already exists, if not
+     * the database will be created immediately.
+     *
+     * @param \TechDivision\ApplicationServer\Interfaces\ApplicationInterface $application The application instance
      *
      * @return void
      */
-    public function setContainer(ContainerInterface $container)
+    public function __construct(ApplicationInterface $application)
+    {
+        $this->application = $application;
+    }
+
+    /**
+     * Returns the application instance.
+     *
+     * @return \TechDivision\ApplicationServer\Interfaces\ApplicationInterface The application instance
+     */
+    public function getApplication()
+    {
+        return $this->application;
+    }
+
+    /**
+     * Injects the container in into the receiver instance.
+     *
+     * @param \TechDivision\ApplicationServer\Interfaces\ContainerInterface $container The container instance
+     *
+     * @return void
+     */
+    public function injectContainer(ContainerInterface $container)
     {
         $this->container = $container;
     }
@@ -67,8 +108,8 @@ abstract class AbstractReceiver implements Receiver
     {
 
         // check if a container instance is available
-        if (empty($this->container)) {
-            throw new \Exception("Necessary Worker does not exist");
+        if ($this->container == null) {
+            throw new \Exception("Can't find container instance");
         }
 
         // update the monitor
