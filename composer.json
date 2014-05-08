@@ -12,10 +12,10 @@
     ],
     "require": {
         "php" : ">=5.4.0",
-        "techdivision/appserver": "dev-master",,
+        "techdivision/persistencecontainer": "dev-master",
         "techdivision/messagequeueprotocol": "dev-master"
     },
     "autoload": {
-        "psr-0": {"TechDivision": "src/"}
+        "psr-0": { "TechDivision": "src/" }
     }
 }
