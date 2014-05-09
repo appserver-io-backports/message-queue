@@ -80,8 +80,10 @@ class QueueManager
 
         if (is_dir($basePath = $this->getWebappPath() . DIRECTORY_SEPARATOR . 'META-INF')) {
 
+            $iterator = new \FilesystemIterator($basePath);
+
             // gather all the deployed web applications
-            foreach (new \FilesystemIterator($basePath) as $file) {
+            foreach (new \RegexIterator($iterator, '/^.*\.xml$/') as $file) {
 
                 // check if file or sub directory has been found
                 if ($file->isDir() === false) {
