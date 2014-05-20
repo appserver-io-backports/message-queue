@@ -65,8 +65,6 @@ abstract class AbstractReceiver implements Receiver
      * the database will be created immediately.
      *
      * @param \TechDivision\ApplicationServer\Interfaces\ApplicationInterface $application The application instance
-     *
-     * @return void
      */
     public function __construct(ApplicationInterface $application)
     {
