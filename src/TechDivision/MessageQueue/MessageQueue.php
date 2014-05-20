@@ -58,8 +58,6 @@ class MessageQueue implements Queue
      *
      * @param string $name Holds the queue name to use
      * @param string $type The message bean type to handle the messages
-     *
-     * @return void
      */
     private function __construct($name, $type)
     {

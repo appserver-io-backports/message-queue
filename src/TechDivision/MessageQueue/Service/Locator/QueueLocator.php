@@ -56,7 +56,6 @@ class QueueLocator implements ResourceLocatorInterface
      * Initializes the locator with the actual queue manager instance.
      *
      * @param \TechDivision\MessageQueue\QueueManager $queueManager The queue manager instance
-     * @return void
      */
     public function __construct(QueueManager $queueManager)
     {
@@ -66,7 +65,7 @@ class QueueLocator implements ResourceLocatorInterface
     /**
      * Tries to locate the servlet that handles the request and returns the instance if one can be found.
      *
-     * @param \TechDivision\MessageQueueProtocol\Queue $queue
+     * @param \TechDivision\MessageQueueProtocol\Queue $queue The requested queue
      *
      * @return \TechDivision\MessageQueueProtocol\Queue
      * @see \TechDivision\MessageQueue\Service\Locator\ResourceLocatorInterface::locate()

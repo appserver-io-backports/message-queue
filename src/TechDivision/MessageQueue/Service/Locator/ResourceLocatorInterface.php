@@ -39,12 +39,13 @@ use TechDivision\MessageQueueProtocol\Queue;
  * @link       https://github.com/techdivision/TechDivision_MessageQueue
  * @link       http://www.appserver.io
  */
-interface ResourceLocatorInterface {
+interface ResourceLocatorInterface
+{
 
     /**
      * Tries to locate the servlet that handles the request and returns the instance if one can be found.
      *
-     * @param \TechDivision\MessageQueueProtocol\Queue $queue
+     * @param \TechDivision\MessageQueueProtocol\Queue $queue The requested queue
      *
      * @return \TechDivision\MessageQueueProtocol\Queue
      * @see \TechDivision\MessageQueue\Service\Locator\ResourceLocatorInterface::locate()

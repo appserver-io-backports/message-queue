@@ -71,8 +71,6 @@ class QueueManager
     /**
      * Deploys the MessageQueue's.
      *
-     * @param SimpleXMLElement $sxe The XML node with the MessageBean information
-     *
      * @return void
      */
     protected function registerMessageQueues()
@@ -103,7 +101,7 @@ class QueueManager
                         $attributes = $node->attributes();
 
                         // create a new queue instance
-                        $instance = MessageQueue::createQueue((string) $node->destination, (string) $attributes['type']);
+                        $instance = MessageQueue::createQueue((string)$node->destination, (string)$attributes['type']);
 
                         // register destination and receiver type
                         $this->queues[$instance->getName()] = $instance;
@@ -125,8 +123,11 @@ class QueueManager
     }
 
     /**
+     * Setter for the webappPath member
      *
-     * @param string $webappPath
+     * @param string $webappPath Path to the webapp
+     *
+     * @return void
      */
     public function setWebappPath($webappPath)
     {
@@ -134,6 +135,7 @@ class QueueManager
     }
 
     /**
+     * Getter for the webappPath member
      *
      * @return string
      */
