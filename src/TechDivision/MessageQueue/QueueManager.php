@@ -23,6 +23,7 @@
 
 namespace TechDivision\MessageQueue;
 
+use TechDivision\Context\Context;
 use TechDivision\Storage\GenericStackable;
 use TechDivision\MessageQueueProtocol\Queue;
 
@@ -174,6 +175,18 @@ class QueueManager extends \Stackable implements Context
     }
 
     /**
+     * Returns the value with the passed name from the context.
+     *
+     * @param string $key The key of the value to return from the context.
+     *
+     * @return mixed The requested attribute
+     */
+    public function getAttribute($key)
+    {
+        throw new \Exception(sprintf('%s is not implemented yes', __METHOD__));
+    }
+
+    /**
      * Returns TRUE if the application is related with the
      * passed queue instance.
      *
@@ -197,5 +210,17 @@ class QueueManager extends \Stackable implements Context
     public function locate(Queue $queue)
     {
         return $this->getResourceLocator()->locate($this, $queue);
+    }
+
+    /**
+     * Updates the message monitor.
+     *
+     * @param Message $message The message to update the monitor for
+     *
+     * @return void
+     */
+    public function updateMonitor(Message $message)
+    {
+        error_log('Update message monitor for message: ' . spl_object_hash($message));
     }
 }

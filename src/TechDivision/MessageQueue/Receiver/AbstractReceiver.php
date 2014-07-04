@@ -23,7 +23,6 @@
 
 namespace TechDivision\MessageQueue\Receiver;
 
-use TechDivision\ApplicationServer\Interfaces\ContainerInterface;
 use TechDivision\ApplicationServer\Interfaces\ApplicationInterface;
 use TechDivision\MessageQueueProtocol\Message;
 use TechDivision\MessageQueueProtocol\Receiver;
@@ -43,13 +42,6 @@ use TechDivision\MessageQueueProtocol\Receiver;
  */
 abstract class AbstractReceiver implements Receiver
 {
-
-    /**
-     * The Worker that initialized the receiver.
-     *
-     * @var \TechDivision\ApplicationServer\ContainerInterface
-     */
-    protected $container = null;
 
     /**
      * The application instance that provides the entity manager.
@@ -84,35 +76,23 @@ abstract class AbstractReceiver implements Receiver
     }
 
     /**
-     * Injects the container in into the receiver instance.
-     *
-     * @param \TechDivision\ApplicationServer\Interfaces\ContainerInterface $container The container instance
-     *
-     * @return void
-     */
-    public function injectContainer(ContainerInterface $container)
-    {
-        $this->container = $container;
-    }
-
-    /**
-     * Updates the message monitor over the
-     * Worker's method.
+     * Updates the message monitor over the applications queue manager method.
      *
      * @param \TechDivision\MessageQueueProtocol\Message $message The message to update the monitor for
      *
      * @return void
-     * @throws \Exception Is thrown if no Worker exists
+     * @throws \Exception Is thrown if no queue manager is registered in the application
      */
     protected function updateMonitor(Message $message)
     {
 
-        // check if a container instance is available
-        if ($this->container == null) {
-            throw new \Exception("Can't find container instance");
+        // check if a application instance is available
+        $queueManager = $this->getApplication()->getQueueManager();
+        if ($queueManager == null) {
+            throw new \Exception(sprintf('Can\'t find queue manager instance in application %s', $application->getName()));
         }
 
         // update the monitor
-        $this->container->updateMonitor($message);
+        $queueManager->updateMonitor($message);
     }
 }
