@@ -26,6 +26,7 @@ namespace TechDivision\MessageQueue;
 use TechDivision\Context\Context;
 use TechDivision\Storage\GenericStackable;
 use TechDivision\MessageQueueProtocol\Queue;
+use TechDivision\MessageQueueProtocol\Message;
 
 /**
  * The queue manager handles the queues and message beans registered for the application.
@@ -99,7 +100,7 @@ class QueueManager extends \Stackable implements Context
     }
 
     /**
-     * Deploys the MessageQueue's.
+     * Deploys the message queues.
      *
      * @param SimpleXMLElement $sxe The XML node with the MessageBean information
      *

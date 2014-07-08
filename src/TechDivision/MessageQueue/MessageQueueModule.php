@@ -20,6 +20,7 @@ use TechDivision\Http\HttpRequestInterface;
 use TechDivision\Http\HttpResponseInterface;
 use TechDivision\ServletEngine\ServletEngine;
 use TechDivision\MessageQueue\MessageQueueValve;
+use TechDivision\Servlet\Http\HttpServletRequest;
 
 /**
  * A message queue module implementation.
@@ -60,5 +61,43 @@ class MessageQueueModule extends ServletEngine
     public function initValves()
     {
         $this->valves[] = new MessageQueueValve();
+    }
+
+    /**
+     * Initialize the request handlers, instead of the way the servlet engine works
+     * we need to initialize a new request handler for each message to avoid locks
+     * because of nesting invokation.
+     *
+     * @return void
+     * @see \TechDivision\MessageQueue\MessageQueueModule::requestHandlerFromPool()
+     */
+    public function initRequestHandlers()
+    {
+        // we need to create the request handlers on the fly
+    }
+
+    /**
+     * Tries to find a request handler that matches the actual request and injects it into the request.
+     *
+     * @param \TechDivision\Servlet\Http\HttpServletRequest $servletRequest The request instance to we have to inject a request handler
+     *
+     * @return void
+     */
+    protected function requestHandlerFromPool(HttpServletRequest $servletRequest)
+    {
+
+        // iterate over all applications to create a new request handler
+        foreach ($this->getApplications() as $pattern => $application) {
+
+            // if the application name matches the servlet context
+            if ($application->getName() === ltrim($servletRequest->getContextPath(), '/')) {
+
+                // create a new request handler and inject it into the servlet request
+                $requestHandler = new RequestHandler($application);
+                $this->workingRequestHandlers[$requestHandler->getThreadId()] = true;
+                $servletRequest->injectRequestHandler($requestHandler);
+                break;
+            }
+        }
     }
 }

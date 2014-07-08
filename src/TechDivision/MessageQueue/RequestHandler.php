@@ -1,7 +1,7 @@
 <?php
 
 /**
- * TechDivision\ServletEngine\RequestHandler
+ * TechDivision\MessageQueue\RequestHandler
  *
  * NOTICE OF LICENSE
  *
@@ -11,16 +11,16 @@
  *
  * PHP version 5
  *
- * @category  Appserver
- * @package   TechDivision_PersistenceContainer
+ * @category  Library
+ * @package   TechDivision_MessageQueue
  * @author    Tim Wagner <tw@techdivision.com>
  * @copyright 2014 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link      https://github.com/techdivision/TechDivision_PersistenceContainerProtocol
+ * @link      https://github.com/techdivision/TechDivision_MessageQueue
  * @link      http://www.appserver.io
  */
 
-namespace TechDivision\PersistenceContainer;
+namespace TechDivision\MessageQueue;
 
 use TechDivision\Context\Context;
 use TechDivision\MessageQueueProtocol\MessageQueueProtocol;
@@ -30,12 +30,12 @@ use TechDivision\ApplicationServer\Interfaces\ApplicationInterface;
  * This is a request handler that is necessary to process each request of an
  * application in a separate context.
  *
- * @category  Appserver
- * @package   TechDivision_PersistenceContainer
+ * @category  Library
+ * @package   TechDivision_MessageQueue
  * @author    Tim Wagner <tw@techdivision.com>
  * @copyright 2014 TechDivision GmbH <info@techdivision.com>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link      https://github.com/techdivision/TechDivision_PersistenceContainerProtocol
+ * @link      https://github.com/techdivision/TechDivision_MessageQueue
  * @link      http://www.appserver.io
  */
 class RequestHandler extends \Thread implements Context
@@ -128,7 +128,7 @@ class RequestHandler extends \Thread implements Context
                         $application->registerClassLoaders();
 
                         // unpack the message from the request
-                        $message = MessageQueueProtocol::unpack($request->getBodyContent());
+                        $message = MessageQueueProtocol::unpack($servletRequest->getBodyContent());
 
                         // load class name and session ID from remote method
                         $queueProxy = $message->getDestination();
@@ -138,19 +138,20 @@ class RequestHandler extends \Thread implements Context
                         $queue = $application->getQueueManager()->locate($queueProxy);
 
                         // lock the container and lookup the bean instance
-                        $instance = $application->getBeanManager()->lookup($queue->getType(), $sessionId, array($application));
+                        $beanManager = $application->getBeanManager();
+                        $instance = $beanManager->getResourceLocator()->lookup($beanManager, $queue->getType(), $sessionId, array($application));
 
                         // inject the application to the receiver and process the message
-                        $instance->injectApplication($application);
                         $instance->onMessage($message, $sessionId);
 
-                    } catch (\Exception $e) {
-                        $servletResponse->appendBodyStream($e->__toString());
-                        $servletResponse->setStatusCode(500);
-                    }
+                        // reset the flag
+                        $self->handleRequest = false;
 
-                    // reset the flag
-                    $self->handleRequest = false;
+                    } catch (\Exception $e) {
+
+                        // we can only write a message here because we don't wait!
+                        error_log($e->__toString());
+                    }
                 }
 
             }, $this);
