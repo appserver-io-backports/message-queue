@@ -16,11 +16,19 @@
 
 namespace TechDivision\MessageQueue;
 
+use TechDivision\Storage\GenericStackable;
+use TechDivision\Http\HttpResponseStates;
 use TechDivision\Http\HttpRequestInterface;
 use TechDivision\Http\HttpResponseInterface;
-use TechDivision\ServletEngine\ServletEngine;
-use TechDivision\MessageQueue\MessageQueueValve;
-use TechDivision\Servlet\Http\HttpServletRequest;
+use TechDivision\Server\Dictionaries\ServerVars;
+use TechDivision\Server\Dictionaries\ModuleHooks;
+use TechDivision\Server\Interfaces\RequestContextInterface;
+use TechDivision\Server\Interfaces\ServerContextInterface;
+use TechDivision\Server\Exceptions\ModuleException;
+use TechDivision\Connection\ConnectionRequestInterface;
+use TechDivision\Connection\ConnectionResponseInterface;
+use TechDivision\MessageQueueProtocol\Utils\PriorityKeys;
+use TechDivision\MessageQueueProtocol\MessageQueueProtocol;
 
 /**
  * A message queue module implementation.
@@ -33,7 +41,7 @@ use TechDivision\Servlet\Http\HttpServletRequest;
  * @link      https://github.com/techdivision/TechDivision_MessageQueue
  * @link      http://www.appserver.io
  */
-class MessageQueueModule extends ServletEngine
+class MessageQueueModule extends GenericStackable
 {
 
     /**
@@ -54,50 +62,124 @@ class MessageQueueModule extends ServletEngine
     }
 
     /**
-     * Initialize the valves that handles the requests.
+     * Initialize the module and the necessary members.
      *
      * @return void
      */
-    public function initValves()
+    public function __construct()
     {
-        $this->valves[] = new MessageQueueValve();
+
+        /**
+         * The initialized message queu instances.
+         *
+         * @var \TechDivision\Storage\GenericStackable
+         */
+        $this->queues = new GenericStackable();
+
+        /**
+         * The factory instance for the message wrapper instances.
+         *
+         * @var \TechDivision\MessageQueue\MessageWrapperFactory
+         */
+        $this->messageWrapperFactory = new MessageWrapperFactory();
     }
 
     /**
-     * Initialize the request handlers, instead of the way the servlet engine works
-     * we need to initialize a new request handler for each message to avoid locks
-     * because of nesting invokation.
+     * Prepares the module for upcoming request in specific context
      *
-     * @return void
-     * @see \TechDivision\MessageQueue\MessageQueueModule::requestHandlerFromPool()
+     * @return bool
+     * @throws \TechDivision\Server\Exceptions\ModuleException
      */
-    public function initRequestHandlers()
+    public function prepare()
     {
-        // we need to create the request handlers on the fly
     }
 
     /**
-     * Tries to find a request handler that matches the actual request and injects it into the request.
+     * Initializes the module.
      *
-     * @param \TechDivision\Servlet\Http\HttpServletRequest $servletRequest The request instance to we have to inject a request handler
+     * @param \TechDivision\Server\Interfaces\ServerContextInterface $serverContext The servers context instance
      *
      * @return void
+     * @throws \TechDivision\Server\Exceptions\ModuleException
      */
-    protected function requestHandlerFromPool(HttpServletRequest $servletRequest)
+    public function init(ServerContextInterface $serverContext)
     {
+        try {
 
-        // iterate over all applications to create a new request handler
-        foreach ($this->getApplications() as $pattern => $application) {
+            // create a queue worker for each application
+            foreach ($serverContext->getContainer()->getApplications() as $application) {
 
-            // if the application name matches the servlet context
-            if ($application->getName() === ltrim($servletRequest->getContextPath(), '/')) {
+                // load the queue manager to check if there are queues registered for the application
+                if ($queueManager = $application->getQueueManager()) {
 
-                // create a new request handler and inject it into the servlet request
-                $requestHandler = new RequestHandler($application);
-                $this->workingRequestHandlers[$requestHandler->getThreadId()] = true;
-                $servletRequest->injectRequestHandler($requestHandler);
-                break;
+                    // if yes, initialize and start the queue worker
+                    foreach ($queueManager->getQueues() as $queue) {
+
+                        // initialize the queues storage for the priorities
+                        $this->queues[$queueName = $queue->getName()] = new GenericStackable();
+
+                        // create a separate queue for each priority
+                        foreach (PriorityKeys::getAll() as $priorityKey) {
+                            $this->queues[$queueName][$priorityKey] = new QueueWorker($priorityKey, $application);
+                        }
+                    }
+                }
             }
+
+        } catch (\Exception $e) {
+            throw new ModuleException($e);
+        }
+    }
+
+    /**
+     * Process servlet request.
+     *
+     * @param \TechDivision\Connection\ConnectionRequestInterface     $request        A request object
+     * @param \TechDivision\Connection\ConnectionResponseInterface    $response       A response object
+     * @param \TechDivision\Server\Interfaces\RequestContextInterface $requestContext A requests context instance
+     * @param int                                                     $hook           The current hook to process logic for
+     *
+     * @return bool
+     * @throws \TechDivision\Server\Exceptions\ModuleException
+     */
+    public function process(ConnectionRequestInterface $request, ConnectionResponseInterface $response,  RequestContextInterface $requestContext, $hook)
+    {
+
+        try {
+
+            // In php an interface is, by definition, a fixed contract. It is immutable.
+            // So we have to declair the right ones afterwards...
+            /** @var $request \TechDivision\Http\HttpRequestInterface */
+            /** @var $request \TechDivision\Http\HttpResponseInterface */
+
+            // if false hook is comming do nothing
+            if (ModuleHooks::REQUEST_POST !== $hook) {
+                return;
+            }
+
+            // check if we are the handler that has to process this request
+            if ($requestContext->getServerVar(ServerVars::SERVER_HANDLER) !== $this->getModuleName()) {
+                return;
+            }
+
+            // unpack the message from the request body
+            $message = $this->messageWrapperFactory->emptyInstance();
+            $message->init(MessageQueueProtocol::unpack($request->getBodyContent()));
+
+            // load queue name and priority key
+            $queueName = $message->getDestination()->getName();
+            $priorityKey = $message->getPriority();
+
+            // attach the message to the queue found as message destination
+            $this->queues[$queueName][$priorityKey]->attach($message);
+
+            // set response state to be dispatched after this without calling other modules process
+            $response->setState(HttpResponseStates::DISPATCH);
+
+        } catch (ModuleException $me) {
+            throw $me;
+        } catch (\Exception $e) {
+            throw new ModuleException($e, 500);
         }
     }
 }
