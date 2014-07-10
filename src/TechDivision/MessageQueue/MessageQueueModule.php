@@ -27,6 +27,7 @@ use TechDivision\Server\Interfaces\ServerContextInterface;
 use TechDivision\Server\Exceptions\ModuleException;
 use TechDivision\Connection\ConnectionRequestInterface;
 use TechDivision\Connection\ConnectionResponseInterface;
+use TechDivision\MessageQueueProtocol\QueueContext;
 use TechDivision\MessageQueueProtocol\Utils\PriorityKeys;
 use TechDivision\MessageQueueProtocol\MessageQueueProtocol;
 
@@ -110,7 +111,7 @@ class MessageQueueModule extends GenericStackable
             foreach ($serverContext->getContainer()->getApplications() as $application) {
 
                 // load the queue manager to check if there are queues registered for the application
-                if ($queueManager = $application->getQueueManager()) {
+                if ($queueManager = $application->getManager(QueueContext::IDENTIFIER)) {
 
                     // if yes, initialize and start the queue worker
                     foreach ($queueManager->getQueues() as $queue) {

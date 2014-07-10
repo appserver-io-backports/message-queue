@@ -23,10 +23,10 @@
 
 namespace TechDivision\MessageQueue;
 
-use TechDivision\Context\Context;
 use TechDivision\Storage\GenericStackable;
 use TechDivision\MessageQueueProtocol\Queue;
 use TechDivision\MessageQueueProtocol\Message;
+use TechDivision\MessageQueueProtocol\QueueContext;
 
 /**
  * The queue manager handles the queues and message beans registered for the application.
@@ -40,7 +40,7 @@ use TechDivision\MessageQueueProtocol\Message;
  * @link      https://github.com/techdivision/TechDivision_MessageQueue
  * @link      http://www.appserver.io
  */
-class QueueManager extends \Stackable implements Context
+class QueueManager extends \Stackable implements QueueContext
 {
 
     /**
@@ -176,18 +176,6 @@ class QueueManager extends \Stackable implements Context
     }
 
     /**
-     * Returns the value with the passed name from the context.
-     *
-     * @param string $key The key of the value to return from the context.
-     *
-     * @return mixed The requested attribute
-     */
-    public function getAttribute($key)
-    {
-        throw new \Exception(sprintf('%s is not implemented yes', __METHOD__));
-    }
-
-    /**
      * Returns TRUE if the application is related with the
      * passed queue instance.
      *
@@ -216,12 +204,35 @@ class QueueManager extends \Stackable implements Context
     /**
      * Updates the message monitor.
      *
-     * @param Message $message The message to update the monitor for
+     * @param \TechDivision\MessageQueueProtocol\Message $message The message to update the monitor for
      *
      * @return void
      */
     public function updateMonitor(Message $message)
     {
         error_log('Update message monitor for message: ' . spl_object_hash($message));
+    }
+
+    /**
+     * Initializes the manager instance.
+     *
+     * @return void
+     * @see \TechDivision\Application\Interfaces\ManagerInterface::initialize()
+     */
+    public function getIdentifier()
+    {
+        return QueueContext::IDENTIFIER;
+    }
+
+    /**
+     * Returns the value with the passed name from the context.
+     *
+     * @param string $key The key of the value to return from the context.
+     *
+     * @return mixed The requested attribute
+     */
+    public function getAttribute($key)
+    {
+        throw new \Exception(sprintf('%s is not implemented yes', __METHOD__));
     }
 }

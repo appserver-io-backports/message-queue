@@ -18,6 +18,7 @@ namespace TechDivision\MessageQueue;
 
 use TechDivision\Storage\GenericStackable;
 use TechDivision\MessageQueueProtocol\Message;
+use TechDivision\MessageQueueProtocol\QueueContext;
 use TechDivision\MessageQueueProtocol\Utils\PriorityKey;
 use TechDivision\MessageQueueProtocol\Utils\MQStateActive;
 use TechDivision\MessageQueueProtocol\Utils\MQStateFailed;
@@ -26,7 +27,8 @@ use TechDivision\MessageQueueProtocol\Utils\MQStatePaused;
 use TechDivision\MessageQueueProtocol\Utils\MQStateProcessed;
 use TechDivision\MessageQueueProtocol\Utils\MQStateToProcess;
 use TechDivision\MessageQueueProtocol\Utils\MQStateUnknown;
-use TechDivision\ApplicationServer\Interfaces\ApplicationInterface;
+use TechDivision\Application\Interfaces\ApplicationInterface;
+use TechDivision\PersistenceContainerProtocol\BeanContext;
 
 /**
  * A message queue worker implementation listening to a queue, defined in the passed application.
@@ -170,7 +172,7 @@ class QueueWorker extends \Thread
                         $sessionId = $message->getSessionId();
 
                         // lookup the queue and process the message
-                        if ($queue = $application->getQueueManager()->locate($queueProxy)) {
+                        if ($queue = $application->getManager(QueueContext::IDENTIFIER)->locate($queueProxy)) {
 
                             // lock the message
                             $message->setState(MQStateInProgress::get());
@@ -179,7 +181,7 @@ class QueueWorker extends \Thread
                             $queueType = $queue->getType();
 
                             // lock the container and lookup the bean instance
-                            $beanManager = $application->getBeanManager();
+                            $beanManager = $application->getManager(BeanContext::IDENTIFIER);
                             $instance = $beanManager->getResourceLocator()->lookup($beanManager, $queueType, $sessionId, array($application));
 
                             // inject the application to the receiver and process the message

@@ -23,9 +23,10 @@
 
 namespace TechDivision\MessageQueue\Receiver;
 
-use TechDivision\ApplicationServer\Interfaces\ApplicationInterface;
 use TechDivision\MessageQueueProtocol\Message;
 use TechDivision\MessageQueueProtocol\Receiver;
+use TechDivision\MessageQueueProtocol\QueueContext;
+use TechDivision\Application\Interfaces\ApplicationInterface;
 
 /**
  * The abstract superclass for all receivers.
@@ -87,7 +88,7 @@ abstract class AbstractReceiver implements Receiver
     {
 
         // check if a application instance is available
-        $queueManager = $this->getApplication()->getQueueManager();
+        $queueManager = $this->getApplication()->getManager(QueueContext::IDENTIFIER);
         if ($queueManager == null) {
             throw new \Exception(sprintf('Can\'t find queue manager instance in application %s', $application->getName()));
         }
