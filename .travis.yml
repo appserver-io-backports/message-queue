@@ -9,6 +9,9 @@ before_install:
   - pyrus install pear/PHP_CodeSniffer
   - phpenv rehash
 
+before_script:
+  - composer selfupdate 
+
 script:
   - ant build
 
