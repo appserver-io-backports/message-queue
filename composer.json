@@ -6,7 +6,7 @@
     "require": {
         "php" : ">=5.4.0",
         "techdivision/persistencecontainer": "0.5.*",
-        "techdivision/messagequeueprotocol": "0.5.*"
+        "techdivision/messagequeueprotocol": "0.1.*"
     },
     "autoload": {
         "psr-0": { "TechDivision\\MessageQueue": "src/" }
