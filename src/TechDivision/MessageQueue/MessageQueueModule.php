@@ -143,7 +143,7 @@ class MessageQueueModule extends GenericStackable
      * @return bool
      * @throws \TechDivision\Server\Exceptions\ModuleException
      */
-    public function process(ConnectionRequestInterface $request, ConnectionResponseInterface $response,  RequestContextInterface $requestContext, $hook)
+    public function process(ConnectionRequestInterface $request, ConnectionResponseInterface $response, RequestContextInterface $requestContext, $hook)
     {
 
         try {

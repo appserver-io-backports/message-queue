@@ -118,7 +118,7 @@ class MessageWrapper extends GenericStackable implements Message
     /**
      * Initializes the wrapper with the real message
      *
-     * @param \TechDivision\MessageQueueProtocol\Message The message we want to wrap
+     * @param \TechDivision\MessageQueueProtocol\Message $message The message we want to wrap
      *
      * @return void
      */

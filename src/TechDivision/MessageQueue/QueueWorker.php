@@ -90,7 +90,7 @@ class QueueWorker extends \Thread
     /**
      * Attach a new message to the queue.
      *
-     * @param \TechDivision\MessageQueueProtocol\Message the message to be attached to the queue
+     * @param \TechDivision\MessageQueueProtocol\Message $message the message to be attached to the queue
      *
      * @return void
      */
@@ -104,7 +104,7 @@ class QueueWorker extends \Thread
     /**
      * Removes the message from the queue.
      *
-     * @param \TechDivision\MessageQueueProtocol\Message the message to be removed from the queue
+     * @param \TechDivision\MessageQueueProtocol\Message $message The message to be removed from the queue
      *
      * @return void
      */
