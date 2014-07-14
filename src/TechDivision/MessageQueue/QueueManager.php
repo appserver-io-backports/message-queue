@@ -23,6 +23,11 @@
 
 namespace TechDivision\MessageQueue;
 
+use TechDivision\Storage\GenericStackable;
+use TechDivision\MessageQueueProtocol\Queue;
+use TechDivision\MessageQueueProtocol\Message;
+use TechDivision\MessageQueueProtocol\QueueContext;
+
 /**
  * The queue manager handles the queues and message beans registered for the application.
  *
@@ -35,22 +40,48 @@ namespace TechDivision\MessageQueue;
  * @link      https://github.com/techdivision/TechDivision_MessageQueue
  * @link      http://www.appserver.io
  */
-class QueueManager
+class QueueManager extends \Stackable implements QueueContext
 {
 
     /**
-     * The path to the web application.
+     * Initializes the queue manager.
      *
-     * @var string
+     * @return void
      */
-    protected $webappPath;
+    public function __construct()
+    {
+
+        // initialize the member variables
+        $this->webappPath = '';
+        $this->resourceLocator = null;
+
+        // initialize the stackable for the queues
+        $this->queues = new GenericStackable();
+    }
 
     /**
-     * The array with queue names and the MessageReceiver class names as values
+     * Injects the absolute path to the web application.
      *
-     * @var array
+     * @param string $webappPath The absolute path to this web application
+     *
+     * @return void
      */
-    protected $queues = array();
+    public function injectWebappPath($webappPath)
+    {
+        $this->webappPath = $webappPath;
+    }
+
+    /**
+     * Injects the resource locator that locates the requested queue.
+     *
+     * @param \TechDivision\MessageQueue\ResourceLocator $resourceLocator The resource locator
+     *
+     * @return void
+     */
+    public function injectResourceLocator(ResourceLocator $resourceLocator)
+    {
+        $this->resourceLocator = $resourceLocator;
+    }
 
     /**
      * Has been automatically invoked by the container after the application
@@ -69,7 +100,7 @@ class QueueManager
     }
 
     /**
-     * Deploys the MessageQueue's.
+     * Deploys the message queues.
      *
      * @return void
      */
@@ -112,10 +143,10 @@ class QueueManager
     }
 
     /**
-     * Returns the array with queue names and the
-     * MessageReceiver class names as values.
+     * Returns the array with queue names and the MessageReceiver class
+     * names as values.
      *
-     * @return array
+     * @return array The registered queues
      */
     public function getQueues()
     {
@@ -123,24 +154,83 @@ class QueueManager
     }
 
     /**
-     * Setter for the webappPath member
+     * Returns the absolute path to the web application.
      *
-     * @param string $webappPath Path to the webapp
-     *
-     * @return void
-     */
-    public function setWebappPath($webappPath)
-    {
-        $this->webappPath = $webappPath;
-    }
-
-    /**
-     * Getter for the webappPath member
-     *
-     * @return string
+     * @return string The absolute path
      */
     public function getWebappPath()
     {
         return $this->webappPath;
+    }
+
+    /**
+     * Return the resource locator instance.
+     *
+     * @return \TechDivision\MessageQueue\ResourceLocator The resource locator instance
+     */
+    public function getResourceLocator()
+    {
+        return $this->resourceLocator;
+    }
+
+    /**
+     * Returns TRUE if the application is related with the
+     * passed queue instance.
+     *
+     * @param \TechDivision\MessageQueueProtocol\Queue $queue The queue the application has to be related to
+     *
+     * @return boolean TRUE if the application is related, else FALSE
+     */
+    public function hasQueue(Queue $queue)
+    {
+        return array_key_exists($queue->getName(), $this->getQueues());
+    }
+
+    /**
+     * Tries to locate the queue that handles the request and returns the instance
+     * if one can be found.
+     *
+     * @param \TechDivision\MessageQueueProtocol\Queue $queue The queue request
+     *
+     * @return \TechDivision\MessageQueueProtocol\Queue The requested queue instance
+     */
+    public function locate(Queue $queue)
+    {
+        return $this->getResourceLocator()->locate($this, $queue);
+    }
+
+    /**
+     * Updates the message monitor.
+     *
+     * @param \TechDivision\MessageQueueProtocol\Message $message The message to update the monitor for
+     *
+     * @return void
+     */
+    public function updateMonitor(Message $message)
+    {
+        error_log('Update message monitor for message: ' . spl_object_hash($message));
+    }
+
+    /**
+     * Initializes the manager instance.
+     *
+     * @return void
+     * @see \TechDivision\Application\Interfaces\ManagerInterface::initialize()
+     */
+    public function getIdentifier()
+    {
+        return QueueContext::IDENTIFIER;
+    }
+
+    /**
+     * Returns the value with the passed name from the context.
+     *
+     * @param string $key The key of the value to return from the context.
+     *
+     * @return mixed The requested attribute
+     */
+    public function getAttribute($key)
+    {
+        throw new \Exception(sprintf('%s is not implemented yes', __METHOD__));
     }
 }
