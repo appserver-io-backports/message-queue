@@ -43,14 +43,14 @@ class MessageQueue implements Queue
      *
      * @var string
      */
-    private $name = null;
+    protected $name = null;
 
     /**
      * The message bean type to handle the messages.
      *
      * @var string
      */
-    private $type = null;
+    protected $type = null;
 
 
     /**
@@ -59,7 +59,7 @@ class MessageQueue implements Queue
      * @param string $name Holds the queue name to use
      * @param string $type The message bean type to handle the messages
      */
-    private function __construct($name, $type)
+    protected function __construct($name, $type)
     {
         $this->name = $name;
         $this->type = $type;
