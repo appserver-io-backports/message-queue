@@ -5,8 +5,8 @@
     "license": ["OSL-3.0"],
     "require": {
         "php": ">=5.4.0",
-        "techdivision/persistencecontainer": "0.5.*",
-        "techdivision/messagequeueprotocol": "0.1.*"
+        "techdivision/persistencecontainer": "0.6.*",
+        "techdivision/messagequeueprotocol": "0.2.*"
     },
     "autoload": {
         "psr-0": {
