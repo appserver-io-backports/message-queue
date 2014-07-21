@@ -27,6 +27,7 @@ use TechDivision\Storage\GenericStackable;
 use TechDivision\MessageQueueProtocol\Queue;
 use TechDivision\MessageQueueProtocol\Message;
 use TechDivision\MessageQueueProtocol\QueueContext;
+use TechDivision\Application\Interfaces\ApplicationInterface;
 
 /**
  * The queue manager handles the queues and message beans registered for the application.
@@ -87,16 +88,14 @@ class QueueManager extends \Stackable implements QueueContext
      * Has been automatically invoked by the container after the application
      * instance has been created.
      *
-     * @return \TechDivision\ServletContainer\Application The connected application
+     * @param \TechDivision\Application\Interfaces\ApplicationInterface $application The application instance
+     *
+     * @return void
+     * @see \TechDivision\Application\Interfaces\ManagerInterface::initialize()
      */
-    public function initialize()
+    public function initialize(ApplicationInterface $application)
     {
-
-        // deploy the message queues
         $this->registerMessageQueues();
-
-        // return the instance itself
-        return $this;
     }
 
     /**
@@ -232,5 +231,28 @@ class QueueManager extends \Stackable implements QueueContext
     public function getAttribute($key)
     {
         throw new \Exception(sprintf('%s is not implemented yes', __METHOD__));
+    }
+
+    /**
+     * Factory method that adds a initialized manager instance to the passed application.
+     *
+     * @param \TechDivision\Application\Interfaces\ApplicationInterface $application The application instance
+     *
+     * @return void
+     * @see \TechDivision\Application\Interfaces\ManagerInterface::get()
+     */
+    public static function get(ApplicationInterface $application)
+    {
+
+        // initialize the queue locator
+        $queueLocator = new QueueLocator();
+
+        // initialize the queue manager
+        $queueManager = new QueueManager();
+        $queueManager->injectWebappPath($application->getWebappPath());
+        $queueManager->injectResourceLocator($queueLocator);
+
+        // add the manager instance to the application
+        $application->addManager($queueManager);
     }
 }
