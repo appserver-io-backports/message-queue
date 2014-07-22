@@ -145,12 +145,7 @@
     <!-- ==================================================================== -->
     <target name="run-tests-in-runtime" depends="copy-tests" description="Runs the PHPUnit tests and generates a report.">
         <exec executable="${instance.base.dir}/bin/php" dir="${php-target.dir}/${unique.name}/src" failonerror="true">
-<<<<<<< HEAD
             <arg line="-d zend_extension=xdebug.so ${instance.base.dir}/app/code/vendor/bin/phpunit --configuration phpunit.xml.dist" />
-=======
-        	<arg line="-d zend_extension=xdebug.so ${instance.base.dir}/bin/phpunit --configuration phpunit.xml.dist" />
->>>>>>> cd9c2a7640739f0821d88644efcc5e953ac860cb
-        </exec>
     </target>
 
     <!-- ==================================================================== -->
