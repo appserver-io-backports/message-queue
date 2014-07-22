@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 /**
  * TechDivision\MessageQueue\ApplictionTest
@@ -12,9 +12,6 @@
 
 namespace TechDivision\MessageQueue;
 
-use TechDivision\ApplicationServer\Configuration;
-use TechDivision\ApplicationServer\InitialContext;
-
 /**
  * @package     TechDivision\MessageQueue
  * @copyright  	Copyright (c) 2013<info@techdivision.com> - TechDivision GmbH
@@ -24,52 +21,14 @@ use TechDivision\ApplicationServer\InitialContext;
  */
 class ApplicationTest extends \PHPUnit_Framework_TestCase
 {
-    
-	/**
-	 * The server instance to test.
-	 * @var TechDivision\PersistenceContainer\Application
-	 */
-	protected $application;
 
     /**
-     * A dummy application name for testing purposes.
-     * @var string
+     * A dummy test implementation.
+     *
+     * @return void
      */
-    protected $applicationName = 'testApplication';
-    
-	/**
-	 * Initializes the application instance to test.
-	 *
-	 * @return void
-	 */
-	public function setUp()
-	{
-	    $configuration = new Configuration();
-        $configuration->initFromFile(__DIR__ . '/_files/appserver_initial_context.xml');
-		$initialContext = new InitialContext($configuration);
-		$this->application = new Application($initialContext, $this->applicationName);
-	    $this->application->setConfiguration($this->getContainerConfiguration());
-	}
-	
-	/**
-	 * Test is a dummy test integration.
-	 * 
-	 * @return void
-	 */
-	public function testGetDatabaseConfiguration()
-	{
-		$this->assertTrue(true);
-	}
-	
-	/**
-	 * Returns a dummy container configuration.
-	 * 
-	 * @return \TechDivision\ApplicationServer\Configuration The dummy configuration
-	 */
-	public function getContainerConfiguration() {
-	    $configuration = new Configuration();
-	    $configuration->initFromFile(__DIR__ . '/_files/appserver_container.xml');
-	    $configuration->addChildWithNameAndValue('baseDirectory', '/opt/appserver');
-	    return $configuration;
-	}
+    public function testDummy()
+    {
+        $this->assertTrue(true);
+    }
 }
