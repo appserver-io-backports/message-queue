@@ -88,7 +88,7 @@ abstract class AbstractReceiver implements Receiver
         // check if a application instance is available
         $queueManager = $this->getApplication()->getManager(QueueContext::IDENTIFIER);
         if ($queueManager == null) {
-            throw new \Exception(sprintf('Can\'t find queue manager instance in application %s', $application->getName()));
+            throw new \Exception(sprintf('Can\'t find queue manager instance in application %s', $this->getApplication()->getName()));
         }
 
         // update the monitor
