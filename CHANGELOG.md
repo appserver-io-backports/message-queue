@@ -1,3 +1,13 @@
+# Version 0.7.2
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Bugfix invalid access to local variable $application in AbstractReceiver::updateMonitor() method
+
 # Version 0.7.1
 
 ## Bugfixes
