@@ -28,6 +28,7 @@ use TechDivision\MessageQueueProtocol\Queue;
 use TechDivision\MessageQueueProtocol\Message;
 use TechDivision\MessageQueueProtocol\QueueContext;
 use TechDivision\Application\Interfaces\ApplicationInterface;
+use TechDivision\Application\Interfaces\ManagerConfigurationInterface;
 
 /**
  * The queue manager handles the queues and message beans registered for the application.
@@ -236,12 +237,13 @@ class QueueManager extends \Stackable implements QueueContext
     /**
      * Factory method that adds a initialized manager instance to the passed application.
      *
-     * @param \TechDivision\Application\Interfaces\ApplicationInterface $application The application instance
+     * @param \TechDivision\Application\Interfaces\ApplicationInterface               $application          The application instance
+     * @param \TechDivision\Application\Interfaces\ManagerConfigurationInterface|null $managerConfiguration The manager configuration
      *
      * @return void
      * @see \TechDivision\Application\Interfaces\ManagerInterface::get()
      */
-    public static function get(ApplicationInterface $application)
+    public static function visit(ApplicationInterface $application, ManagerConfigurationInterface $managerConfiguration = null)
     {
 
         // initialize the queue locator
@@ -252,7 +254,7 @@ class QueueManager extends \Stackable implements QueueContext
         $queueManager->injectWebappPath($application->getWebappPath());
         $queueManager->injectResourceLocator($queueLocator);
 
-        // add the manager instance to the application
+        // add the initialized manager instance to the application
         $application->addManager($queueManager);
     }
 }

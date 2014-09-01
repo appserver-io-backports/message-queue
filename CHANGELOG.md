@@ -1,3 +1,14 @@
+# Version 0.7.3
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Switch to new ClassLoader + ManagerInterface
+* Add configuration parameters to manager configuration
+
 # Version 0.7.2
 
 ## Bugfixes
