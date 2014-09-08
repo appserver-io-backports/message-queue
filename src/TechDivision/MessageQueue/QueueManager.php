@@ -42,7 +42,7 @@ use TechDivision\Application\Interfaces\ManagerConfigurationInterface;
  * @link      https://github.com/techdivision/TechDivision_MessageQueue
  * @link      http://www.appserver.io
  */
-class QueueManager extends \Stackable implements QueueContext
+class QueueManager extends GenericStackable implements QueueContext
 {
 
     /**
