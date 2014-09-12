@@ -1,3 +1,13 @@
+# Version 0.8.0
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Switch to new techdivision/persistencecontainer version > 0.8
+
 # Version 0.7.3
 
 ## Bugfixes
