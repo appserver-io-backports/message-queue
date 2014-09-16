@@ -16,6 +16,7 @@
 
 namespace TechDivision\MessageQueue;
 
+use TechDivision\Naming\InitialContext;
 use TechDivision\Storage\GenericStackable;
 use TechDivision\MessageQueueProtocol\Message;
 use TechDivision\MessageQueueProtocol\QueueContext;
@@ -180,9 +181,12 @@ class QueueWorker extends \Thread
                             // the queues receiver type
                             $queueType = $queue->getType();
 
-                            // lock the container and lookup the bean instance
-                            $beanManager = $application->getManager(BeanContext::IDENTIFIER);
-                            $instance = $beanManager->getResourceLocator()->lookup($beanManager, $queueType, $sessionId, array($application));
+                            // create an intial context instance
+                            $initialContext = new InitialContext();
+                            $initialContext->injectApplication($application);
+
+                            // lookup the bean instance
+                            $instance = $initialContext->lookup($queueType);
 
                             // inject the application to the receiver and process the message
                             $instance->onMessage($message, $sessionId);

@@ -1,3 +1,13 @@
+# Version 0.8.1
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Lookup message beans using InitialContext provided by techdivision/naming package
+
 # Version 0.8.0
 
 ## Bugfixes

@@ -12,6 +12,7 @@
 	],
 	"require" : {
 		"php" : ">=5.4.0",
+        "techdivision/naming" : "0.1.*",
 		"techdivision/persistencecontainer" : "0.8.*",
 		"techdivision/messagequeueprotocol" : "0.2.*"
 	},
