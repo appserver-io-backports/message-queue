@@ -1,3 +1,13 @@
+# Version 0.8.2
+
+## Bugfixes
+
+* Add synchronized() method around all wait()/notify() calls => pthreads 2.x compatibility
+
+## Features
+
+* None
+
 # Version 0.8.1
 
 ## Bugfixes
