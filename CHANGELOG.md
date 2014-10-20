@@ -1,3 +1,13 @@
+# Version 0.8.3
+
+## Bugfixes
+
+* Inject all Stackable instances instead of initialize them in QueueManager::__construct => pthreads 2.x compatibility
+
+## Features
+
+* None
+
 # Version 0.8.2
 
 ## Bugfixes
