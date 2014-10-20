@@ -52,13 +52,19 @@ class QueueManager extends GenericStackable implements QueueContext
      */
     public function __construct()
     {
-
-        // initialize the member variables
         $this->webappPath = '';
-        $this->resourceLocator = null;
+    }
 
-        // initialize the stackable for the queues
-        $this->queues = new GenericStackable();
+    /**
+     * Injects the storage for the queues.
+     *
+     * @param \TechDivision\Storage\GenericStackable $queues An storage for the queues
+     *
+     * @return void
+     */
+    public function injectQueues(GenericStackable $queues)
+    {
+        $this->queues = $queues;
     }
 
     /**
@@ -246,11 +252,15 @@ class QueueManager extends GenericStackable implements QueueContext
     public static function visit(ApplicationInterface $application, ManagerConfigurationInterface $managerConfiguration = null)
     {
 
+        // initialize the stackable for the queues
+        $queues = new GenericStackable();
+
         // initialize the queue locator
         $queueLocator = new QueueLocator();
 
         // initialize the queue manager
         $queueManager = new QueueManager();
+        $queueManager->injectQueues($queues);
         $queueManager->injectWebappPath($application->getWebappPath());
         $queueManager->injectResourceLocator($queueLocator);
 
