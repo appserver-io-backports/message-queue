@@ -16,6 +16,7 @@
 
 namespace TechDivision\MessageQueue;
 
+
 use TechDivision\Storage\GenericStackable;
 use TechDivision\Http\HttpResponseStates;
 use TechDivision\Http\HttpRequestInterface;
@@ -170,6 +171,11 @@ class MessageQueueModule extends GenericStackable
             // load queue name and priority key
             $queueName = $message->getDestination()->getName();
             $priorityKey = $message->getPriority();
+
+            // prevents to attach message to not existing queue
+            if (!$this->queues[$queueName][$priorityKey]) {
+                throw new ModuleException("Queue not found");
+            }
 
             // attach the message to the queue found as message destination
             $this->queues[$queueName][$priorityKey]->attach($message);
