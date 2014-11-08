@@ -16,7 +16,6 @@
 
 namespace TechDivision\MessageQueue;
 
-
 use TechDivision\Storage\GenericStackable;
 use TechDivision\Http\HttpResponseStates;
 use TechDivision\Http\HttpRequestInterface;
