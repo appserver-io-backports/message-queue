@@ -70,18 +70,8 @@ class MessageQueueModule extends GenericStackable
     public function __construct()
     {
 
-        /**
-         * The initialized message queu instances.
-         *
-         * @var \TechDivision\Storage\GenericStackable
-         */
+        // initialize the members
         $this->queues = new GenericStackable();
-
-        /**
-         * The factory instance for the message wrapper instances.
-         *
-         * @var \TechDivision\MessageQueue\MessageWrapperFactory
-         */
         $this->messageWrapperFactory = new MessageWrapperFactory();
     }
 

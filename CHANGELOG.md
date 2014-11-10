@@ -1,3 +1,15 @@
+# Version 0.9.1
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Revert integration to initialize manager instances with thread based factories
+* Add dependency to new appserver-io/logger library
+* Integration of monitoring/profiling functionality
+
 # Version 0.9.0
 
 ## Bugfixes

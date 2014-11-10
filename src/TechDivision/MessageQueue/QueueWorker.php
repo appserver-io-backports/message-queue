@@ -16,6 +16,7 @@
 
 namespace TechDivision\MessageQueue;
 
+use AppserverIo\Logger\LoggerUtils;
 use TechDivision\Naming\InitialContext;
 use TechDivision\Storage\GenericStackable;
 use TechDivision\MessageQueueProtocol\Message;
@@ -30,6 +31,7 @@ use TechDivision\MessageQueueProtocol\Utils\MQStateToProcess;
 use TechDivision\MessageQueueProtocol\Utils\MQStateUnknown;
 use TechDivision\Application\Interfaces\ApplicationInterface;
 use TechDivision\PersistenceContainerProtocol\BeanContext;
+use TechDivision\MessageQueueProtocol\Utils\PriorityMedium;
 
 /**
  * A message queue worker implementation listening to a queue, defined in the passed application.
@@ -44,27 +46,6 @@ use TechDivision\PersistenceContainerProtocol\BeanContext;
  */
 class QueueWorker extends \Thread
 {
-
-    /**
-     * The application instance the worker is working for.
-     *
-     * @var \TechDivision\ApplicationServer\Interfaces\ApplicationInterface
-     */
-    protected $application;
-
-    /**
-     * The storage that contains the messages unsorted as they will be attached.
-     *
-     * @var \TechDivision\Storage\GenericStackable
-     */
-    protected $storage;
-
-    /**
-     * The priority of this queue worker.
-     *
-     * @var \TechDivision\MessageQueueProtocol\Utils\PriorityKey
-     */
-    protected $priorityKey;
 
     /**
      * Initializes the queue worker with the application and the storage it should work on.
@@ -111,7 +92,6 @@ class QueueWorker extends \Thread
      */
     protected function remove(Message $message)
     {
-        // remove the message from the message
         unset($this->storage[$message->getMessageId()]);
     }
 
@@ -128,6 +108,11 @@ class QueueWorker extends \Thread
 
         // register the class loader again, because each thread has its own context
         $application->registerClassLoaders();
+
+        // try to load the profile logger
+        if ($profileLogger = $application->getInitialContext()->getLogger(LoggerUtils::PROFILE)) {
+            $profileLogger->appendThreadContext(sprintf('queue-worker-%s', $this->priorityKey));
+        }
 
         /*
          * Reduce CPU load depending on the queues priority, whereas priority
@@ -212,6 +197,12 @@ class QueueWorker extends \Thread
 
                 // reduce CPU load depending on queue priority
                 usleep($sleepFor);
+            }
+
+            if ($profileLogger) { // profile the size of the session pool
+                $profileLogger->debug(
+                    sprintf('Processed queue worker with priority %s, size of queue size is: %d', $this->priorityKey, sizeof($this->storage))
+                );
             }
 
             // we maximal check the storage once a second
