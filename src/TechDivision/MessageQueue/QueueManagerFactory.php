@@ -24,7 +24,8 @@
 namespace TechDivision\MessageQueue;
 
 use TechDivision\Storage\GenericStackable;
-use TechDivision\ApplicationServer\AbstractManagerFactory;
+use TechDivision\Application\Interfaces\ApplicationInterface;
+use TechDivision\Application\Interfaces\ManagerConfigurationInterface;
 
 /**
  * A factory for the queue manager instances.
@@ -38,48 +39,33 @@ use TechDivision\ApplicationServer\AbstractManagerFactory;
  * @link      https://github.com/techdivision/TechDivision_MessageQueue
  * @link      http://www.appserver.io
  */
-class QueueManagerFactory extends AbstractManagerFactory
+class QueueManagerFactory
 {
 
     /**
      * The main method that creates new instances in a separate context.
      *
+     * @param \TechDivision\Application\Interfaces\ApplicationInterface          $application          The application instance to register the class loader with
+     * @param \TechDivision\Application\Interfaces\ManagerConfigurationInterface $managerConfiguration The manager configuration
+     *
      * @return void
      */
-    public function run()
+    public static function visit(ApplicationInterface $application, ManagerConfigurationInterface $managerConfiguration)
     {
 
-        while (true) { // we never stop
+        // initialize the stackable for the queues
+        $queues = new GenericStackable();
 
-            $this->synchronized(function ($self) {
+        // initialize the queue locator
+        $queueLocator = new QueueLocator();
 
-                // make instances local available
-                $instances = $self->instances;
-                $application = $self->application;
-                $initialContext = $self->initialContext;
+        // initialize the queue manager
+        $queueManager = new QueueManager();
+        $queueManager->injectQueues($queues);
+        $queueManager->injectWebappPath($application->getWebappPath());
+        $queueManager->injectResourceLocator($queueLocator);
 
-                // register the default class loader
-                $initialContext->getClassLoader()->register(true, true);
-
-                // initialize the stackable for the queues
-                $queues = new GenericStackable();
-
-                // initialize the queue locator
-                $queueLocator = new QueueLocator();
-
-                // initialize the queue manager
-                $queueManager = new QueueManager();
-                $queueManager->injectQueues($queues);
-                $queueManager->injectWebappPath($application->getWebappPath());
-                $queueManager->injectResourceLocator($queueLocator);
-
-                // attach the instance
-                $instances[] = $queueManager;
-
-                // wait for the next instance to be created
-                $self->wait();
-
-            }, $this);
-        }
+        // attach the instance
+        $application->addManager($queueManager);
     }
 }

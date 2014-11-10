@@ -12,7 +12,11 @@
 	],
 	"require" : {
 		"php" : ">=5.4.0",
+        "techdivision/http" : "0.1.*",
+		"appserver-io/logger" : "0.1.*",
 		"techdivision/naming" : "0.1.*",
+		"techdivision/server" : "0.1.*",
+		"techdivision/application" : "0.3.*",
 		"techdivision/persistencecontainer" : "0.9.*",
 		"techdivision/messagequeueprotocol" : "0.2.*"
 	},

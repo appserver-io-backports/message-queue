@@ -50,60 +50,21 @@ class MessageWrapper extends GenericStackable implements Message
 {
 
     /**
-     * The message ID as hash value.
-     *
-     * @var string
+     * Initializes the instance.
      */
-    protected $messageId = null;
+    public function __construct()
+    {
 
-    /**
-     * The message itself.
-     *
-     * @var array
-     */
-    protected $message = null;
-
-    /**
-     * The unique session id.
-     *
-     * @var string
-     */
-    protected $sessionId = "";
-
-    /**
-     * The destination Queue to send the message to.
-     *
-     * @var \TechDivision\MessageQueueProtocol\Queue
-     */
-    protected $destination = null;
-
-    /**
-     * The parent message.
-     *
-     * @var \TechDivision\MessageQueueProtocol\Message
-     */
-    protected $parentMessage = null;
-
-    /**
-     * The monitor for monitoring the message.
-     *
-     * @var \TechDivision\MessageQueueProtocol\Monitor
-     */
-    protected $messageMonitor = null;
-
-    /**
-     * The priority of the message, defaults to 'low'.
-     *
-     * @var integer
-     */
-    protected $priority = PriorityLow::KEY;
-
-    /**
-     * The state of the message, defaults to 'active'.
-     *
-     * @var integer
-     */
-    protected $state = MQStateActive::KEY;
+        // initialize the members
+        $this->messageId = null;
+        $this->message = null;
+        $this->sessionId = '';
+        $this->destination = null;
+        $this->parentMessage = null;
+        $this->messageMonitor = null;
+        $this->priority = PriorityLow::KEY;
+        $this->state = MQStateActive::KEY;
+    }
 
     /**
      * Creates a new and empty wrapper instance.
