@@ -171,9 +171,9 @@ class MessageQueueModule extends GenericStackable
             $queueName = $message->getDestination()->getName();
             $priorityKey = $message->getPriority();
 
-            // prevents to attach message to not existing queue
-            if (!$this->queues[$queueName][$priorityKey]) {
-                throw new ModuleException("Queue not found");
+            // prevents to attach message to none existing queue
+            if (!isset($this->queues[$queueName][$priorityKey])) {
+                throw new ModuleException(sprintf("Queue %s not found", $queueName));
             }
 
             // attach the message to the queue found as message destination
