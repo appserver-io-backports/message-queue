@@ -158,7 +158,7 @@ class QueueWorker extends \Thread
                         $sessionId = $message->getSessionId();
 
                         // lookup the queue and process the message
-                        if ($queue = $application->getManager(QueueContext::IDENTIFIER)->locate($queueProxy)) {
+                        if ($queue = $application->search('QueueContext')->locate($queueProxy)) {
 
                             // lock the message
                             $message->setState(MQStateInProgress::get());
