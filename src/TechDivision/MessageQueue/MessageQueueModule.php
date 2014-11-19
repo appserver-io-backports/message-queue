@@ -101,7 +101,7 @@ class MessageQueueModule extends GenericStackable
             foreach ($serverContext->getContainer()->getApplications() as $application) {
 
                 // load the queue manager to check if there are queues registered for the application
-                if ($queueManager = $application->getManager(QueueContext::IDENTIFIER)) {
+                if ($queueManager = $application->search('QueueContext')) {
 
                     // if yes, initialize and start the queue worker
                     foreach ($queueManager->getQueues() as $queue) {

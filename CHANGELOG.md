@@ -1,3 +1,14 @@
+# Version 0.9.2
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Use application context to lookup QueueContext
+* Add manager configuration to factory method
+
 # Version 0.9.1
 
 ## Bugfixes

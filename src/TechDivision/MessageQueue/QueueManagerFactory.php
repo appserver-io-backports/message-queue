@@ -66,6 +66,6 @@ class QueueManagerFactory
         $queueManager->injectResourceLocator($queueLocator);
 
         // attach the instance
-        $application->addManager($queueManager);
+        $application->addManager($queueManager, $managerConfiguration);
     }
 }
